@@ -1,0 +1,20 @@
+{
+  "name": "stella",
+  "interface": {
+    "displayName": "stella"
+  },
+  "plugins": [
+    {
+      "name": "stella",
+      "source": {
+        "source": "local",
+        "path": "./plugins/stella"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

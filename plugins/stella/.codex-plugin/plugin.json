@@ -1,0 +1,17 @@
+{
+  "name": "stella",
+  "version": "0.1.0",
+  "description": "Connect to stella, the open-source legal workspace: its MCP server and a skill that signs in and verifies the connection.",
+  "author": {
+    "name": "stella",
+    "url": "https://stll.app"
+  },
+  "homepage": "https://stll.app/docs/get-started/connect-ai-assistant/",
+  "repository": "https://github.com/stella/plugins",
+  "license": "MIT",
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "stella"
+  }
+}
