@@ -8,5 +8,5 @@
   },
   "homepage": "https://stll.app/docs/get-started/connect-ai-assistant/",
   "repository": "https://github.com/stella/plugins",
-  "license": "MIT"
+  "license": "Apache-2.0"
 }
