@@ -19,9 +19,9 @@ one (self-hosted instances serve `/mcp` on their own API host).
 This plugin registers the stella server. Find the exact name your client uses
 for it:
 
-- Claude Code: `claude mcp list` (a plugin server is listed with a `plugin:`
-  prefix, such as `plugin:stella:stella`).
-- Codex: `codex mcp list`.
+- Claude Code: `claude mcp list`. This plugin's server is
+  `plugin:stella:stella`.
+- Codex: `codex mcp list`. This plugin's server is `stella`.
 
 If stella is not listed, add it:
 
@@ -37,8 +37,9 @@ step 4.
 Start the sign-in as a long-running background process, not as a normal shell
 call:
 
-- Codex: `codex mcp login <name> --no-browser`. Run it outside the sandbox; ask
-  the user to approve that.
+- Codex: `codex mcp login <name> --no-browser`. Run it outside the sandbox;
+  request permission only if the environment requires it and the user has
+  not already authorized the sign-in.
 - Claude Code: `claude mcp login <name> --no-browser`. It needs a terminal, so
   run it in a pseudo-terminal:
   - macOS: `script -q /dev/null claude mcp login <name> --no-browser`
@@ -61,7 +62,7 @@ call:
 Check the sign-in without a model call:
 
 - Claude Code: `claude mcp get <name>` must show it as connected.
-- Codex: `codex mcp list` must show it as authenticated.
+- Codex: `codex mcp list` must show `OAuth` in the Auth column.
 
 Until it does, tell the user that stella is added but not connected. Quote the
 output, and offer to repeat step 2. Never call an added server connected.
