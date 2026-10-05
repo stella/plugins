@@ -1,3 +1,7 @@
+<p align="center">
+  <img src=".github/assets/banner.png" alt="stella plugins" width="100%" />
+</p>
+
 # stella plugins
 
 Plugins that connect AI coding agents to [stella](https://stll.app), the
@@ -28,4 +32,4 @@ Self-hosted instances and the other MCP addresses (`/mcp-anonymized`,
 
 ## License
 
-MIT
+Apache-2.0
