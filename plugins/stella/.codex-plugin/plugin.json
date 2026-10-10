@@ -1,9 +1,9 @@
 {
   "name": "stella",
-  "version": "0.1.0",
-  "description": "Connect to stella, the open-source legal workspace: its MCP server and a skill that signs in and verifies the connection.",
+  "version": "1.1.0",
+  "description": "Connect stella to search case law and legislation and work with accessible matters and documents.",
   "author": {
-    "name": "stella",
+    "name": "stella labs, s.r.o.",
     "url": "https://stll.app"
   },
   "homepage": "https://stll.app/docs/get-started/connect-ai-assistant/",
@@ -12,6 +12,44 @@
   "skills": "./skills/",
   "mcpServers": "./.mcp.json",
   "interface": {
-    "displayName": "stella"
+    "displayName": "stella",
+    "shortDescription": "Legal research and matters",
+    "longDescription": "Connect stella to search case law and legislation and work with the matters your account can access. Read documents, find templates, inspect contacts, and perform supported document and matter updates through separate tools. Sign in to stella in your browser and review the requested permissions before connecting. Available tools depend on your permissions and the features enabled for your organization. Results include source references where available. You need a stella account and access to an organization. Legal-source coverage varies by jurisdiction.",
+    "developerName": "stella labs, s.r.o.",
+    "category": "Productivity",
+    "capabilities": [
+      "Search case law",
+      "Read court decisions and citations",
+      "Search and read legislation",
+      "Find and read matter documents",
+      "Fill document templates",
+      "Manage tasks, contacts, and matter records"
+    ],
+    "websiteURL": "https://stll.app",
+    "supportURL": "https://stll.app/support/",
+    "privacyPolicyURL": "https://stll.app/privacy/",
+    "termsOfServiceURL": "https://stll.app/terms/",
+    "defaultPrompt": [
+      "Find Czech Supreme Court decisions on dismissal for redundancy and summarize the key reasoning.",
+      "What does the Czech Labour Code say about the notice period? Quote the provision.",
+      "List my matters and the tasks that are due this week."
+    ],
+    "logo": "./assets/logo.png",
+    "logoDark": "./assets/logo-dark.png",
+    "composerIcon": "./assets/composer-icon.png",
+    "composerIconDark": "./assets/composer-icon-dark.png"
+  },
+  "extensions": {
+    "com.openai": {
+      "onboardingSkill": "./skills/connect-stella/SKILL.md",
+      "review": {
+        "commerce": false,
+        "commerce_description": "stella does not sell products or process payments in conversations."
+      },
+      "publication": {
+        "release_notes": "Adds listing details, icons, and an onboarding skill for the stella connection.",
+        "countries": []
+      }
+    }
   }
 }

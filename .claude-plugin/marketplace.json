@@ -1,14 +1,15 @@
 {
   "name": "stella",
   "owner": {
-    "name": "stella"
+    "name": "stella labs, s.r.o."
   },
   "description": "Plugins that connect AI agents to stella, the open-source legal workspace.",
   "plugins": [
     {
       "name": "stella",
       "source": "./plugins/stella",
-      "description": "stella's MCP server plus a skill that connects and verifies it."
+      "description": "Connect stella to search case law and legislation and work with accessible matters and documents.",
+      "version": "1.1.0"
     }
   ]
 }
