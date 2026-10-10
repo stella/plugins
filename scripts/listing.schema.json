@@ -1,0 +1,253 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "stella listing release constraints",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+    "author": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "url": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048,
+          "pattern": "^https://[^/@\\s]+(?:/[^\\s]*)?$"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "homepage": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048,
+      "pattern": "^https://[^/@\\s]+(?:/[^\\s]*)?$"
+    },
+    "repository": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048,
+      "pattern": "^https://[^/@\\s]+(?:/[^\\s]*)?$"
+    },
+    "license": {
+      "type": "string",
+      "minLength": 1
+    },
+    "skills": {
+      "const": "./skills/"
+    },
+    "mcpServers": {
+      "const": "./.mcp.json"
+    },
+    "interface": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "shortDescription": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "longDescription": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "developerName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "category": {
+          "const": "Productivity"
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "maxItems": 20
+        },
+        "defaultPrompt": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[^@]*$"
+          },
+          "maxItems": 3,
+          "uniqueItems": true
+        },
+        "websiteURL": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024,
+          "pattern": "^https://[^/@\\s]+(?:/[^\\s]*)?$"
+        },
+        "supportURL": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024,
+          "pattern": "^https://[^/@\\s]+(?:/[^\\s]*)?$"
+        },
+        "privacyPolicyURL": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024,
+          "pattern": "^https://[^/@\\s]+(?:/[^\\s]*)?$"
+        },
+        "termsOfServiceURL": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024,
+          "pattern": "^https://[^/@\\s]+(?:/[^\\s]*)?$"
+        },
+        "logo": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^\\./assets/[^/]+\\.png$"
+        },
+        "logoDark": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^\\./assets/[^/]+\\.png$"
+        },
+        "composerIcon": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^\\./assets/[^/]+\\.png$"
+        },
+        "composerIconDark": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^\\./assets/[^/]+\\.png$"
+        }
+      },
+      "required": [
+        "displayName",
+        "shortDescription",
+        "longDescription",
+        "developerName",
+        "category",
+        "capabilities",
+        "defaultPrompt",
+        "websiteURL",
+        "supportURL",
+        "privacyPolicyURL",
+        "termsOfServiceURL",
+        "logo",
+        "logoDark",
+        "composerIcon",
+        "composerIconDark"
+      ],
+      "additionalProperties": false
+    },
+    "extensions": {
+      "type": "object",
+      "properties": {
+        "com.openai": {
+          "type": "object",
+          "properties": {
+            "onboardingSkill": {
+              "const": "./skills/connect-stella/SKILL.md"
+            },
+            "review": {
+              "type": "object",
+              "properties": {
+                "commerce": {
+                  "const": false
+                },
+                "commerce_description": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "commerce",
+                "commerce_description"
+              ],
+              "additionalProperties": false
+            },
+            "publication": {
+              "type": "object",
+              "properties": {
+                "release_notes": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "countries": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "^[A-Z]{2}$"
+                  },
+                  "maxItems": 249,
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "release_notes",
+                "countries"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "onboardingSkill",
+            "review",
+            "publication"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "com.openai"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "name",
+    "version",
+    "description",
+    "author",
+    "homepage",
+    "repository",
+    "license",
+    "skills",
+    "mcpServers",
+    "interface",
+    "extensions"
+  ],
+  "additionalProperties": false
+}
