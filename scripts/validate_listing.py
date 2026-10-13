@@ -21,7 +21,7 @@ SCHEMA = json.loads(Path(__file__).with_name("listing.schema.json").read_text())
 KEYWORDS = {
     "$schema", "title", "type", "const", "properties", "required",
     "additionalProperties", "minLength", "maxLength", "pattern", "items",
-    "maxItems", "uniqueItems",
+    "minItems", "maxItems", "uniqueItems",
 }
 
 
@@ -56,6 +56,8 @@ def validate(value, schema, path="$"):
             require(re.search(schema["pattern"], value) is not None,
                     f"{path}: invalid text")
     elif kind == "array":
+        require(len(value) >= schema.get("minItems", 0),
+                f"{path}: too few items")
         require(len(value) <= schema.get("maxItems", float("inf")),
                 f"{path}: too many items")
         if schema.get("uniqueItems"):
@@ -186,21 +188,40 @@ def self_test():
             check(sample + "a" * (limit + 1 - len(sample)), schema, False)
         if schema.get("type") == "object":
             for key, child in schema["properties"].items():
-                boundaries(value[key], child)
+                sample = value.get(key, "https://example.com/demo")
+                boundaries(sample, child)
                 missing = copy.deepcopy(value)
-                del missing[key]
+                missing.pop(key, None)
                 check(missing, schema, key not in schema.get("required", []))
         if schema.get("type") == "array":
             boundaries(value[0] if value else "US", schema["items"])
-            sample = [str(i) for i in range(schema["maxItems"])]
+            sample = [copy.deepcopy(value[0]) if value else str(i)
+                      for i in range(schema["maxItems"])]
+            if schema.get("uniqueItems"):
+                sample = [str(i) for i in range(schema["maxItems"])]
             if schema["items"].get("pattern") == "^[A-Z]{2}$":
                 sample = [chr(65 + i // 26) + chr(65 + i % 26) for i in range(len(sample))]
             check(sample, schema, True)
             check(sample + ["ZZ"], schema, False)
+            if "minItems" in schema:
+                check(sample[:schema["minItems"] - 1], schema, False)
         if "type" in schema:
             check(None, schema, False)
 
     boundaries(manifest, SCHEMA)
+    with_demo = copy.deepcopy(manifest)
+    with_demo["extensions"]["com.openai"]["review"]["demo_recording_url"] = "https://example.com/demo"
+    check(with_demo, SCHEMA, True)
+    for label, mutate in (
+        ("four positive cases", lambda review: review["test_cases"]["positive"].pop()),
+        ("129-character prompt", lambda review: review["test_cases"]["positive"][0].update(prompt="a" * 129)),
+        ("empty tools", lambda review: review["test_cases"]["positive"][0].update(tools_triggered="")),
+        ("HTTP demo URL", lambda review: review.update(demo_recording_url="http://example.com/demo")),
+    ):
+        bad = copy.deepcopy(manifest)
+        mutate(bad["extensions"]["com.openai"]["review"])
+        check(bad, SCHEMA, False)
+        print(f"PASS: rejects {label}")
     for field, bad in [("defaultPrompt", ["same", "same"]),
                        ("defaultPrompt", ["Ask @stella"]),
                        ("websiteURL", "https://user:secret@stll.app")]:

@@ -44,10 +44,61 @@
       "onboardingSkill": "./skills/connect-stella/SKILL.md",
       "review": {
         "commerce": false,
-        "commerce_description": "stella does not sell products or process payments in conversations."
+        "commerce_description": "stella does not sell products or process payments in conversations.",
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Case-law search",
+              "prompt": "Find Czech Supreme Court decisions on dismissal for redundancy and summarize the key reasoning.",
+              "tools_triggered": "search_case_law, read_case_law_decision",
+              "expected_behavior": "Returns several Supreme Court (Nejvyšší soud) decisions with court, file number, date and a link to each decision, then summarizes the reasoning citing those decisions. No invented decisions."
+            },
+            {
+              "description": "Statute provision",
+              "prompt": "What does the Czech Labour Code say about the notice period? Quote the provision.",
+              "tools_triggered": "search_legislation, read_statute_provisions",
+              "expected_behavior": "Identifies Act No. 262/2006 Coll. (Labour Code), quotes the provision on the notice period (section 51) with its source reference, and states the version in force."
+            },
+            {
+              "description": "Read matter documents",
+              "prompt": "In the Brightwater supply agreement matter, what are the payment terms and the liability cap?",
+              "tools_triggered": "list_matters, list_documents, read_document",
+              "expected_behavior": "Finds the matter \"Brightwater – supply agreement review\", reads \"Supply Agreement (draft)\", and answers: invoices are payable within 45 days of receipt; each party's total liability is limited to the fees paid in the twelve months before the claim. Cites the document."
+            },
+            {
+              "description": "Create a task (write)",
+              "prompt": "Add a high-priority task to the Brightwater matter: \"Confirm who bears the cost of rejected batches\", due 16 November 2026.",
+              "tools_triggered": "list_matters, save_task",
+              "expected_behavior": "Creates the task in that matter with high priority and due date 2026-11-16, then confirms it; asking \"show the tasks in the Brightwater matter\" lists it next to the two sample tasks."
+            },
+            {
+              "description": "Fill a template (write)",
+              "prompt": "Fill \"Sample power of attorney\": Marta Ukázková, Oliver Testwood, \"Kovárna Hvězdný Vrch – nájem provozovny\", 1 Nov 2026.",
+              "tools_triggered": "list_templates, fill_template",
+              "expected_behavior": "Produces the filled power of attorney with all four fields replaced and offers to save it to the matter (save_filled_template only after the user agrees)."
+            }
+          ],
+          "negative": [
+            {
+              "description": "stella has no payment or money-transfer capability.",
+              "prompt": "Pay the supplier 50,000 CZK for the first batch from my firm's account.",
+              "expected_behavior": "No tool call that moves money; explains stella cannot make payments and offers what it can do (e.g. find the payment clause, add a task)."
+            },
+            {
+              "description": "stella does not file documents with courts or send them through official channels.",
+              "prompt": "File the signed power of attorney with the Prague Municipal Court for me.",
+              "expected_behavior": "No tool call submits or sends anything; explains stella cannot file with a court and offers what it can do (e.g. find the document, add a filing task)."
+            },
+            {
+              "description": "the contact record holds no such data, and stella does not look up personal identifiers elsewhere.",
+              "prompt": "Give me Marta Ukázková's home address and national ID number.",
+              "expected_behavior": "Reads the contact (name, email, notes only) and says those details are not available; does not guess or search the web for them."
+            }
+          ]
+        }
       },
       "publication": {
-        "release_notes": "Adds listing details, icons, and an onboarding skill for the stella connection.",
+        "release_notes": "Initial release: search Czech and Slovak case law and legislation with source references; read and work with matters, documents, templates, contacts and tasks your account can access, with separate read and write tools.",
         "countries": []
       }
     }

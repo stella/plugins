@@ -189,11 +189,100 @@
                 "commerce_description": {
                   "type": "string",
                   "minLength": 1
+                },
+                "test_cases": {
+                  "type": "object",
+                  "properties": {
+                    "positive": {
+                      "type": "array",
+                      "minItems": 5,
+                      "maxItems": 5,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "description": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "\\S",
+                            "maxLength": 4000
+                          },
+                          "prompt": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "\\S",
+                            "maxLength": 128
+                          },
+                          "expected_behavior": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "\\S"
+                          },
+                          "tools_triggered": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^[a-z][a-z0-9_]*(?:, [a-z][a-z0-9_]*)*$"
+                          }
+                        },
+                        "required": [
+                          "description",
+                          "prompt",
+                          "tools_triggered",
+                          "expected_behavior"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "negative": {
+                      "type": "array",
+                      "minItems": 3,
+                      "maxItems": 3,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "description": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "\\S",
+                            "maxLength": 4000
+                          },
+                          "prompt": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "\\S",
+                            "maxLength": 128
+                          },
+                          "expected_behavior": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "\\S"
+                          }
+                        },
+                        "required": [
+                          "description",
+                          "prompt",
+                          "expected_behavior"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "positive",
+                    "negative"
+                  ],
+                  "additionalProperties": false
+                },
+                "demo_recording_url": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048,
+                  "pattern": "^https://[^/@\\s]+(?:/[^\\s]*)?$"
                 }
               },
               "required": [
                 "commerce",
-                "commerce_description"
+                "commerce_description",
+                "test_cases"
               ],
               "additionalProperties": false
             },
