@@ -5,7 +5,7 @@ Run the offline release checks and their boundary tests from the repository root
 ```sh
 python3 scripts/validate_listing.py --self-test
 claude plugin validate ./plugins/stella --strict
-claude plugin validate ./.claude-plugin/marketplace.json --strict
+claude plugin validate . --strict
 ```
 
 The Python check uses only the standard library. `listing.schema.json` records
@@ -22,11 +22,18 @@ the extended listing lives in `.codex-plugin/plugin.json`. The two root indexes
 continue pointing to the same package. This package does not introduce a root
 `plugin.json` in the separate Agent Plugins format.
 
-To build the local release archive:
+The package rules it enforces on the source tree and on a built archive: the
+onboarding skill at `skills/get-started/SKILL.md`, every skill's `name` equal
+to its folder, the `logo` and `composerIcon` PNGs (optional dark variants must
+differ from their light icons), exactly one URL-backed HTTPS server with no
+headers or credentials, and no lifecycle hooks, app references, second
+manifest or MCP configuration, or hidden files.
+
+To build the release archive reproducibly and check it:
 
 ```sh
-cd plugins
-zip -r stella.zip stella -x '*/.git' '*/.git/*'
+python3 scripts/build_zip.py
+python3 scripts/validate_listing.py --zip dist/stella.zip
 ```
 
 Keep the archive out of Git. Increment the versions in both package manifests

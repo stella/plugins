@@ -165,9 +165,7 @@
         "privacyPolicyURL",
         "termsOfServiceURL",
         "logo",
-        "logoDark",
-        "composerIcon",
-        "composerIconDark"
+        "composerIcon"
       ],
       "additionalProperties": false
     },
@@ -178,7 +176,7 @@
           "type": "object",
           "properties": {
             "onboardingSkill": {
-              "const": "./skills/connect-stella/SKILL.md"
+              "const": "./skills/get-started/SKILL.md"
             },
             "review": {
               "type": "object",

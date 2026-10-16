@@ -35,13 +35,11 @@
       "List my matters and the tasks that are due this week."
     ],
     "logo": "./assets/logo.png",
-    "logoDark": "./assets/logo-dark.png",
-    "composerIcon": "./assets/composer-icon.png",
-    "composerIconDark": "./assets/composer-icon-dark.png"
+    "composerIcon": "./assets/composer-icon.png"
   },
   "extensions": {
     "com.openai": {
-      "onboardingSkill": "./skills/connect-stella/SKILL.md",
+      "onboardingSkill": "./skills/get-started/SKILL.md",
       "review": {
         "commerce": false,
         "commerce_description": "stella does not sell products or process payments in conversations.",
