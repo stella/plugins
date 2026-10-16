@@ -6,7 +6,7 @@
 
 Plugins that connect AI coding agents to [stella](https://stll.app), the
 open-source legal workspace. The `stella` plugin adds stella's MCP server and a
-`connect-stella` skill that signs in and verifies the connection.
+`get-started` skill that signs in and verifies the connection.
 
 ## Claude Code
 

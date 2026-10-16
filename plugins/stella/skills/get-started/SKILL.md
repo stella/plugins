@@ -1,5 +1,5 @@
 ---
-name: connect-stella
+name: get-started
 description: Guide browser sign-in and verify the stella connection when the user asks to connect, set up, sign in to, or fix stella.
 ---
 
