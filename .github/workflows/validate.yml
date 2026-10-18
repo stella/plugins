@@ -24,3 +24,12 @@ jobs:
           python3 -I scripts/build_zip.py
       - name: Validate the built plugin ZIP
         run: python3 -I scripts/validate_listing.py --zip dist/stella.zip
+      - name: Record the plugin ZIP digest
+        run: sha256sum dist/stella.zip | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Upload the plugin ZIP
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: stella-plugin-zip
+          path: dist/stella.zip
+          if-no-files-found: error
+          retention-days: 30
