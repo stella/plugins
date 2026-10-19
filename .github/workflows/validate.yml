@@ -2,6 +2,8 @@ name: Validate
 
 on:
   pull_request:
+  merge_group:
+    types: [checks_requested]
   push:
     branches: [main]
 
@@ -24,3 +26,15 @@ jobs:
           python3 -I scripts/build_zip.py
       - name: Validate the built plugin ZIP
         run: python3 -I scripts/validate_listing.py --zip dist/stella.zip
+
+  ci-result:
+    if: always()
+    needs: [listing]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Require every validation job
+        env:
+          LISTING_RESULT: ${{ needs.listing.result }}
+        run: test "$LISTING_RESULT" = success
