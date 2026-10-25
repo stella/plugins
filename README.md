@@ -22,6 +22,12 @@ codex plugin marketplace add stella/plugins
 codex plugin add stella@stella
 ```
 
+## Gemini CLI
+
+```sh
+gemini extensions install https://github.com/stella/plugins
+```
+
 Then ask your agent to connect to stella. It starts the sign-in, shows you a
 link to open in your browser, and confirms the connection once the sign-in
 succeeds.
@@ -29,6 +35,10 @@ succeeds.
 Self-hosted instances and the other MCP addresses (`/mcp-anonymized`,
 `/mcp-law`) are covered in the
 [connection guide](https://stll.app/docs/get-started/connect-ai-assistant/).
+
+## MCP Registry
+
+The server is published as `io.github.stella/stella` from `server.json`.
 
 ## License
 
