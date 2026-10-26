@@ -1,0 +1,11 @@
+{
+  "name": "stella",
+  "version": "1.1.0",
+  "description": "Search case law and legislation and work with accessible matters and documents in stella.",
+  "mcpServers": {
+    "stella": {
+      "httpUrl": "https://api.stll.app/mcp"
+    }
+  },
+  "contextFileName": "GEMINI.md"
+}

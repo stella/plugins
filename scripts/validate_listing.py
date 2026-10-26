@@ -33,6 +33,9 @@ ONBOARDING = "skills/get-started/SKILL.md"
 ICONS = {"logo": "logoDark", "composerIcon": "composerIconDark"}
 # Package files that may start with a dot; every other hidden entry is rejected.
 DOT_FILES = {".codex-plugin/plugin.json", ".claude-plugin/plugin.json", ".mcp.json"}
+# Source-tree manifests for other directories; build_zip.py leaves them out of the ZIP.
+SOURCE_ONLY = {".cursor-plugin/plugin.json"}
+SERVER_URL = "https://api.stll.app/mcp"
 
 
 def require(condition, message):
@@ -119,8 +122,48 @@ def transport(config):
     # URL-backed transport in Codex; the shared HTTP discriminator is needed
     # by the other manifest format. No executable, headers, or auth secrets.
     require(config == {"mcpServers": {"stella": {
-        "type": "http", "url": "https://api.stll.app/mcp",
+        "type": "http", "url": SERVER_URL,
     }}}, "expected one HTTPS stella server with type http")
+
+
+def directories(root, manifest):
+    """Bind the MCP Registry, Gemini CLI, and Cursor manifests to the package.
+
+    Each directory has its own manifest format; all of them must name the same
+    server URL and version as the package, and share one description.
+    """
+    load = lambda path: json.loads(path.read_text())
+    version = manifest["version"]
+    server = load(root / "server.json")
+    description = server["description"]
+    require(server["name"] == "io.github.stella/stella", "invalid registry name")
+    require(0 < len(description) <= 100, "registry description must be 1–100 characters")
+    require(server["version"] == version, "registry version mismatch")
+    require(server["remotes"] == [{"type": "streamable-http", "url": SERVER_URL}],
+            "expected one streamable-http registry remote")
+    require(server["repository"] == {"url": manifest["repository"], "source": "github"},
+            "invalid registry repository")
+    gemini = load(root / "gemini-extension.json")
+    require(gemini["name"] == "stella" and gemini["version"] == version,
+            "Gemini extension identity mismatch")
+    require(gemini["description"] == description, "Gemini description mismatch")
+    require(gemini["mcpServers"] == {"stella": {"httpUrl": SERVER_URL}},
+            "expected one streamable HTTP Gemini server")
+    require((root / gemini["contextFileName"]).is_file(), "missing Gemini context file")
+    plugin = root / "plugins/stella"
+    cursor = load(plugin / ".cursor-plugin/plugin.json")
+    require(cursor["name"] == "stella" and cursor["version"] == version,
+            "Cursor plugin identity mismatch")
+    require(cursor["description"] == description, "Cursor description mismatch")
+    require(cursor["mcpServers"] == {"stella": {"url": SERVER_URL}},
+            "expected one URL-backed Cursor server")
+    bundled(plugin, cursor["logo"])
+    require(cursor["skills"] == manifest["skills"], "Cursor skills path mismatch")
+    entries = load(root / ".cursor-plugin/marketplace.json")["plugins"]
+    require(len(entries) == 1 and entries[0]["source"] == "./plugins/stella",
+            "invalid Cursor root plugin path")
+    for key in ("name", "version", "description"):
+        require(entries[0][key] == cursor[key], f"Cursor root entry mismatch: {key}")
 
 
 def icons(manifest, read):
@@ -237,12 +280,15 @@ def package(root):
             "invalid root plugin path")
     for key in ("name", "version", "description"):
         require(entries[0][key] == manifest[key], f"root entry mismatch: {key}")
+    directories(root, manifest)
     for path in plugin.rglob("*"):
         require(not path.is_symlink(), f"symlink in package: {path}")
         require(path.name not in {".git", ".gitmodules", ".DS_Store"},
                 f"unwanted package entry: {path}")
         if path.is_file():
-            package_entry(path.relative_to(plugin).as_posix())
+            relative = path.relative_to(plugin).as_posix()
+            if relative not in SOURCE_ONLY:
+                package_entry(relative)
             with path.open("rb") as stream:
                 require(not stream.read(128).startswith(b"version https://git-lfs.github.com/spec/"),
                         f"LFS pointer: {path}")
@@ -332,7 +378,63 @@ def self_test():
             else:
                 raise ValueError("self-test accepted invalid package path")
     count += package_self_test(manifest)
+    count += directories_self_test(manifest)
     print(f"PASS: {count} self-tests")
+
+
+def directories_self_test(manifest):
+    """Each directory manifest drifting from the package must be rejected."""
+    files = ("server.json", "gemini-extension.json", "GEMINI.md",
+             ".cursor-plugin/marketplace.json",
+             "plugins/stella/.cursor-plugin/plugin.json",
+             "plugins/stella/assets/logo.png")
+    count = 0
+    with tempfile.TemporaryDirectory() as temporary:
+        root = Path(temporary)
+
+        def reset():
+            for relative in files:
+                target = root / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes((ROOT / relative).read_bytes())
+
+        def edit(relative, mutate):
+            def action():
+                reset()
+                path = root / relative
+                value = json.loads(path.read_text())
+                mutate(value)
+                path.write_text(json.dumps(value))
+                directories(root, manifest)
+            return action
+
+        reset()
+        directories(root, manifest)
+        for label, relative, mutate in (
+            ("registry version drift", "server.json", lambda v: v.update(version="0.0.1")),
+            ("registry URL drift", "server.json",
+             lambda v: v["remotes"][0].update(url="https://example.com/mcp")),
+            ("101-character registry description", "server.json",
+             lambda v: v.update(description="a" * 101)),
+            ("second registry remote", "server.json",
+             lambda v: v["remotes"].append(copy.deepcopy(v["remotes"][0]))),
+            ("Gemini description drift", "gemini-extension.json",
+             lambda v: v.update(description="Other text.")),
+            ("Gemini SSE transport", "gemini-extension.json",
+             lambda v: v.update(mcpServers={"stella": {"url": SERVER_URL}})),
+            ("Gemini missing context file", "gemini-extension.json",
+             lambda v: v.update(contextFileName="MISSING.md")),
+            ("Cursor version drift", "plugins/stella/.cursor-plugin/plugin.json",
+             lambda v: v.update(version="0.0.1")),
+            ("Cursor URL drift", "plugins/stella/.cursor-plugin/plugin.json",
+             lambda v: v.update(mcpServers={"stella": {"url": "https://example.com/mcp"}})),
+            ("Cursor logo outside the package", "plugins/stella/.cursor-plugin/plugin.json",
+             lambda v: v.update(logo="../outside.png")),
+            ("Cursor root entry drift", ".cursor-plugin/marketplace.json",
+             lambda v: v["plugins"][0].update(version="0.0.1")),
+        ):
+            count += rejects(label, edit(relative, mutate))
+    return count
 
 
 def rejects(label, action):
@@ -369,7 +471,8 @@ def package_self_test(manifest):
     with tempfile.TemporaryDirectory() as temporary:
         sources = {path.relative_to(plugin).as_posix(): path.read_bytes()
                    for path in sorted(plugin.rglob("*")) if path.is_file()
-                   and path.name != ".DS_Store"}
+                   and path.name != ".DS_Store"
+                   and path.relative_to(plugin).as_posix() not in SOURCE_ONLY}
 
         def build(name, changes):
             path = Path(temporary) / name

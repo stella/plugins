@@ -29,6 +29,12 @@ differ from their light icons), exactly one URL-backed HTTPS server with no
 headers or credentials, and no lifecycle hooks, app references, second
 manifest or MCP configuration, or hidden files.
 
+The MCP Registry `server.json`, the Gemini CLI `gemini-extension.json`, and the
+Cursor `.cursor-plugin` manifests must carry the package version and server
+URL and share one description; `.cursor-plugin/plugin.json` stays out of the
+archive. Merging a `server.json` change publishes it to the MCP Registry, which
+accepts each version once.
+
 To build the release archive reproducibly and check it:
 
 ```sh
