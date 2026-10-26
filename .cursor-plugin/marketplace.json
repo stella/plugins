@@ -8,7 +8,7 @@
       "name": "stella",
       "source": "./plugins/stella",
       "description": "Search case law and legislation and work with accessible matters and documents in stella.",
-      "version": "1.1.0"
+      "version": "1.1.1"
     }
   ]
 }
