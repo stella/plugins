@@ -93,7 +93,8 @@
               "expected_behavior": "Reads the contact (name, email, notes only) and says those details are not available; does not guess or search the web for them."
             }
           ]
-        }
+        },
+        "demo_recording_url": "https://youtu.be/nt-qiPwdmPI"
       },
       "publication": {
         "release_notes": "Initial release: search Czech and Slovak case law and legislation with source references; read and work with matters, documents, templates, contacts and tasks your account can access, with separate read and write tools.",
