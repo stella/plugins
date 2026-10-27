@@ -1,6 +1,6 @@
 {
   "name": "stella",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Connect stella to search case law and legislation and work with accessible matters and documents.",
   "author": {
     "name": "stella labs, s.r.o.",
@@ -32,7 +32,7 @@
     "defaultPrompt": [
       "Find Czech Supreme Court decisions on dismissal for redundancy and summarize the key reasoning.",
       "What does the Czech Labour Code say about the notice period? Quote the provision.",
-      "List my matters and the tasks that are due this week."
+      "Find Czech Constitutional Court decisions on the right to a fair trial and summarize how the court applies it."
     ],
     "logo": "./assets/logo.png",
     "composerIcon": "./assets/composer-icon.png"
@@ -93,7 +93,8 @@
               "expected_behavior": "Reads the contact (name, email, notes only) and says those details are not available; does not guess or search the web for them."
             }
           ]
-        }
+        },
+        "demo_recording_url": "https://youtu.be/nt-qiPwdmPI"
       },
       "publication": {
         "release_notes": "Initial release: search Czech and Slovak case law and legislation with source references; read and work with matters, documents, templates, contacts and tasks your account can access, with separate read and write tools.",

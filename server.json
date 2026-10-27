@@ -3,7 +3,7 @@
   "name": "io.github.stella/stella",
   "title": "stella",
   "description": "Search case law and legislation and work with accessible matters and documents in stella.",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "websiteUrl": "https://stll.app/docs/get-started/connect-ai-assistant/",
   "repository": {
     "url": "https://github.com/stella/plugins",

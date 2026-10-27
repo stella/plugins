@@ -4,7 +4,7 @@ Connect to [stella](https://stll.app), the open-source legal workspace, through
 its remote MCP server. This plugin includes the server configuration and a
 `get-started` skill that guides sign-in and verifies the connection.
 
-Version 1.1.0 includes listing descriptions, capability labels, starter prompts,
+Version 1.1.1 includes listing descriptions, capability labels, starter prompts,
 publisher and policy links, and 512 × 512 PNG icons.
 The bundled onboarding skill runs setup only when requested. Icon artwork is
 the app favicon from `stella/stella`, `apps/web/public/favicon.svg`; its blue
