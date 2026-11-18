@@ -2,6 +2,8 @@ name: Validate
 
 on:
   pull_request:
+  merge_group:
+    types: [checks_requested]
   push:
     branches: [main]
 
@@ -16,6 +18,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - name: Check the aggregate CI result gate
+        run: python3 -I -m unittest discover -s scripts -p test_ci_result.py
       - name: Validate plugin manifests and listing metadata
         run: python3 -I scripts/validate_listing.py --self-test
       - name: Build reproducible plugin ZIP
@@ -33,3 +37,16 @@ jobs:
           path: dist/stella.zip
           if-no-files-found: error
           retention-days: 30
+
+  ci-result:
+    if: always()
+    needs: [listing]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    permissions:
+      contents: read
+    steps:
+      - name: Require every validation job to succeed
+        env:
+          LISTING_RESULT: ${{ needs.listing.result }}
+        run: test "$LISTING_RESULT" = success
